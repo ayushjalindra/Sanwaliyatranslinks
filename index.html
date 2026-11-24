@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Sanwaliya Translinks — Full Load &amp; Sharing Load Freight Across India</title>
+  <meta name="description" content="Sanwaliya Translinks provides Full Load Truck (FTL) and Sharing Load (PTL) commercial transportation across 28 States and 8 Union Territories of India." />
+  <meta name="theme-color" content="#0B1424" />
+  <link rel="icon" href="images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Hind:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    /* Runs before first paint: enables reveal animations and restores the saved theme (no flash). */
+    (function () {
+      var d = document.documentElement;
+      d.classList.add("js");
+      try { if (sessionStorage.getItem("stl_splash")) d.classList.add("no-splash"); else sessionStorage.setItem("stl_splash", "1"); } catch (e) {}
+      try {
+        var t = localStorage.getItem("stl_theme");
+        if (t === "dark" || t === "light") d.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
+  <script>
+    /* TEAM SOCIAL LINKS: paste each person's profile URL between the quotes (must start with https://).
+       Leave "" and the icon will show a "not set up yet" message instead of a broken link. */
+    window.TEAM_LINKS = {
+      "Ayush Kumawat": { linkedin: "https://www.linkedin.com/in/ayushjalindra/", instagram: "https://www.instagram.com/jivitinsaan" },
+      "Basant Jangir": { linkedin: "https://www.linkedin.com/in/basant-jangir-508862377/", instagram: "https://www.instagram.com/cbj0_7" },
+      "Mehul Jangir":  { linkedin: "", instagram: "" }
+    };
+  </script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <!-- Logo intro: plays once per visit, pure CSS, skipped for reduced motion -->
+  <div class="splash" id="splash" aria-hidden="true">
+    <div class="door door-l"></div><div class="door door-r"></div>
+    <div class="splash-core">
+      <div class="splash-logo"><span class="brand-monogram">ST</span><img src="images/logo.png" alt="" onerror="this.classList.add('is-broken')" /></div>
+      <p class="splash-name">SANWALIYA<b>TRANSLINKS</b></p>
+      <div class="splash-bar"><i></i></div>
+      <span class="splash-pct"></span>
+    </div>
+  </div>
+
+  <!-- Icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-truck" viewBox="0 0 64 28">
+        <rect x="1" y="2" width="38" height="17" rx="2" fill="currentColor" />
+        <path d="M41 7h11l9 8v6H41z" fill="var(--accent)" />
+        <path d="M45 10h6l5 5h-11z" fill="#10141A" opacity=".55" />
+        <circle cx="12" cy="22" r="4.2" fill="#10141A" stroke="currentColor" stroke-width="2" />
+        <circle cx="30" cy="22" r="4.2" fill="#10141A" stroke="currentColor" stroke-width="2" />
+        <circle cx="52" cy="22" r="4.2" fill="#10141A" stroke="currentColor" stroke-width="2" />
+      </symbol>
+      <symbol id="i-linkedin" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77Z" /></symbol>
+      <symbol id="i-instagram" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3Z" /></symbol>
+      <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0-5a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 17a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1ZM3 11h2a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2Zm16 0h2a1 1 0 1 1 0 2h-2a1 1 0 1 1 0-2ZM5.64 5.64a1 1 0 0 1 1.41 0l1.42 1.42a1 1 0 0 1-1.42 1.41L5.64 7.05a1 1 0 0 1 0-1.41Zm10.89 10.89a1 1 0 0 1 1.41 0l1.42 1.42a1 1 0 0 1-1.42 1.41l-1.41-1.41a1 1 0 0 1 0-1.42Zm1.41-10.89a1 1 0 0 1 0 1.41l-1.41 1.42a1 1 0 1 1-1.42-1.42l1.42-1.41a1 1 0 0 1 1.41 0ZM7.05 16.53a1 1 0 0 1 0 1.42l-1.41 1.41a1 1 0 1 1-1.42-1.41l1.42-1.42a1 1 0 0 1 1.41 0Z" /></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></symbol>
+    </defs>
+  </svg>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="Sanwaliya Translinks — home">
+        <span class="brand-mark">
+          <span class="brand-monogram" aria-hidden="true">ST</span>
+          <img src="images/logo.png" alt="" onerror="this.classList.add('is-broken')" />
+        </span>
+        <span class="brand-copy">
+          <span class="brand-name">SANWALIYA</span>
+          <span class="brand-tag">TRANSLINKS</span>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="navLinks" aria-label="Primary">
+        <span class="nav-pill" aria-hidden="true"></span>
+        <a href="#booking-desk" data-i18n="nav_book">Booking</a>
+        <a href="#services" data-i18n="nav_services">Services</a>
+        <a href="#fleet" data-i18n="nav_fleet">Fleet</a>
+        <a href="#network" data-i18n="nav_network">Network</a>
+        <a href="#process" data-i18n="nav_process">Process</a>
+        <a href="#tracking" data-i18n="nav_track">Tracking</a>
+        <a href="#leadership" data-i18n="nav_team">Leadership</a>
+        <a href="#connect" data-i18n="nav_connect">Connect</a>
+        <a href="#booking-desk" class="btn btn-primary nav-cta" data-i18n="nav_cta">Book a Truck</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="langToggle" class="icon-btn" type="button" title="Switch language / भाषा बदलें" aria-label="Switch language">हिं</button>
+        <button id="themeToggle" class="icon-btn" type="button" title="Switch light / dark theme" aria-label="Switch light or dark theme">
+          <svg class="icon theme-icon-moon" aria-hidden="true"><use href="#i-moon" /></svg>
+          <svg class="icon theme-icon-sun" aria-hidden="true"><use href="#i-sun" /></svg>
+        </button>
+        <a href="#booking-desk" class="btn btn-primary btn-sm" data-i18n="nav_cta">Book a Truck</a>
+        <button id="mobileMenuBtn" class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= HERO + BOOKING ================= -->
+    <section class="hero" id="heroSection">
+      <div class="hero-media" aria-hidden="true">
+        <img src="images/hero-highway.jpg" alt="" fetchpriority="high" onerror="this.classList.add('is-broken')" />
+      </div>
+
+      <div class="road" aria-hidden="true"><div class="road-truck"><svg><use href="#i-truck" /></svg></div><div class="road-truck t2"><svg><use href="#i-truck" /></svg></div></div>
+      <svg class="hero-net" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g class="net-lines"><path d="M-20 520C200 420 380 560 560 430S900 300 1220 380" /><path d="M-20 300C240 360 420 200 640 260S960 140 1220 210" /><path d="M100 700C260 560 420 600 600 540S940 520 1220 600" /></g>
+        <g class="net-nodes"><circle cx="560" cy="430" r="5" /><circle cx="640" cy="260" r="5" /><circle cx="1000" cy="330" r="5" /><circle cx="360" cy="380" r="4" /><circle cx="840" cy="545" r="4" /><circle cx="180" cy="470" r="4" /></g>
+      </svg>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow" data-i18n="hero_kicker">All-India commercial transportation</span>
+          <h1 class="hero-title" data-i18n-html="hero_title">Moving India's Freight.<br />Connecting Businesses.</h1>
+          <p class="hero-lead" data-i18n="hero_desc">
+            Dedicated Full Load Trucks (FTL) and consolidated Sharing Loads (PTL) running across India's national highways, ports and industrial corridors.
+          </p>
+
+          <div class="hero-cta">
+            <button type="button" id="heroBookBtn" class="btn btn-primary" data-i18n="cta_book">Book a Truck</button>
+            <button type="button" id="heroAttachBtn" class="btn btn-light" data-i18n="cta_attach">Attach Your Truck</button>
+          </div>
+
+          <dl class="hero-facts">
+            <div>
+              <dt data-i18n="fact_1_k">Service</dt>
+              <dd data-i18n="fact_1_v">Full Load (FTL) &amp; Sharing Load (PTL)</dd>
+            </div>
+            <div>
+              <dt data-i18n="fact_2_k">Fleet</dt>
+              <dd data-i18n="fact_2_v">1T pickups to 55T tractor-trailers</dd>
+            </div>
+            <div>
+              <dt data-i18n="fact_3_k">Coverage</dt>
+              <dd data-i18n="fact_3_v">28 States &amp; 8 Union Territories</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="booking-card" id="booking-desk">
+          <div class="tabs" role="tablist">
+            <button class="tab-btn active" id="tabShipperBtn" data-tab="shipperTab" role="tab" aria-selected="true" aria-controls="shipperTab" type="button" data-i18n="tab_shipper">Book a Truck</button>
+            <button class="tab-btn" id="tabTruckerBtn" data-tab="truckerTab" role="tab" aria-selected="false" aria-controls="truckerTab" type="button" data-i18n="tab_trucker">Attach Your Truck</button>
+          </div>
+
+          <!-- Shipper form -->
+          <form id="shipperTab" class="tab-panel active" role="tabpanel" autocomplete="off">
+            <div class="mode-selector">
+              <label class="mode-option active" id="optFTL">
+                <input type="radio" name="loadType" value="Full Load Truck (FTL)" checked />
+                <span class="mode-code">FTL</span>
+                <span>
+                  <strong data-i18n="load_ftl">Full Load Truck</strong>
+                  <small data-i18n="load_ftl_sub">Dedicated vehicle for bulk cargo</small>
+                </span>
+              </label>
+              <label class="mode-option" id="optPTL">
+                <input type="radio" name="loadType" value="Sharing Load (PTL)" />
+                <span class="mode-code">PTL</span>
+                <span>
+                  <strong data-i18n="load_ptl">Sharing Load</strong>
+                  <small data-i18n="load_ptl_sub">Shared space / part load</small>
+                </span>
+              </label>
+            </div>
+
+            <div class="route-row">
+              <div class="field">
+                <label for="fromCity" data-i18n="lbl_from">From (pickup city / PIN)</label>
+                <input type="text" id="fromCity" placeholder="e.g. Jaipur, Rajasthan" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fromCityList" />
+                <div class="autocomplete-list" id="fromCityList" role="listbox"></div>
+              </div>
+              <button type="button" id="swapCitiesBtn" class="swap-btn" title="Swap pickup and destination" aria-label="Swap pickup and destination">⇄</button>
+              <div class="field">
+                <label for="uptoCity" data-i18n="lbl_upto">Upto (delivery city / PIN)</label>
+                <input type="text" id="uptoCity" placeholder="e.g. Mumbai, Maharashtra" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="uptoCityList" />
+                <div class="autocomplete-list" id="uptoCityList" role="listbox"></div>
+              </div>
+            </div>
+
+            <div id="ftlFields">
+              <div class="field">
+                <label for="truckSelect" data-i18n="lbl_truck">Vehicle category &amp; capacity</label>
+                <select id="truckSelect"></select>
+              </div>
+            </div>
+
+            <div id="ptlFields" class="hidden">
+              <div class="field-grid-2">
+                <div class="field">
+                  <label for="cargoWeight" data-i18n="lbl_weight">Estimated cargo weight</label>
+                  <input type="text" id="cargoWeight" placeholder="e.g. 800 kg or 2.5 Tonnes" />
+                </div>
+                <div class="field">
+                  <label for="cargoPackages" data-i18n="lbl_packages">Packages / pallets</label>
+                  <input type="text" id="cargoPackages" placeholder="e.g. 12 pallets / 30 boxes" />
+                </div>
+              </div>
+              <div class="field">
+                <label for="cargoMaterial" data-i18n="lbl_material">Commodity / material</label>
+                <select id="cargoMaterial">
+                  <option value="FMCG &amp; Retail Goods">FMCG &amp; Retail Goods</option>
+                  <option value="Industrial Machinery &amp; Spares">Industrial Machinery &amp; Spares</option>
+                  <option value="Textiles, Fabrics &amp; Garments">Textiles, Fabrics &amp; Garments</option>
+                  <option value="Construction &amp; Hardware Materials">Construction &amp; Hardware Materials</option>
+                  <option value="Electronics &amp; Consumer Durables">Electronics &amp; Consumer Durables</option>
+                  <option value="Commercial / Warehouse Shifting">Commercial / Warehouse Shifting</option>
+                  <option value="Agricultural &amp; Packed Produce">Agricultural &amp; Packed Produce</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field-grid-2">
+              <div class="field">
+                <label for="pickupDate" data-i18n="lbl_date">Pickup date</label>
+                <input type="date" id="pickupDate" required />
+              </div>
+              <div class="field">
+                <label for="shipperPhone" data-i18n="lbl_phone">Mobile / WhatsApp no.</label>
+                <input type="tel" id="shipperPhone" inputmode="tel" placeholder="+91 98XXX XXXXX" required />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" data-i18n="btn_quote">Prepare Booking Request</button>
+            <p class="form-note" data-i18n="form_note">Review your trip summary, then send it to our dispatch desk on WhatsApp or email.</p>
+          </form>
+
+          <!-- Truck owner form -->
+          <form id="truckerTab" class="tab-panel" role="tabpanel" autocomplete="off">
+            <p class="trucker-note" data-i18n="trucker_intro">Tell us where your truck is and where you'd like to head next. Our dispatch team will get in touch when a matching load is available.</p>
+
+            <div class="field-grid-2">
+              <div class="field">
+                <label for="truckerCurrentCity" data-i18n="lbl_curr_city">Truck's current city</label>
+                <input type="text" id="truckerCurrentCity" placeholder="e.g. Jaipur, Rajasthan" required role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="truckerCurrentCityList" />
+                <div class="autocomplete-list" id="truckerCurrentCityList" role="listbox"></div>
+              </div>
+              <div class="field">
+                <label for="truckerReturnCity" data-i18n="lbl_ret_city">Preferred return city</label>
+                <input type="text" id="truckerReturnCity" placeholder="Any preferred destination" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="truckerReturnCityList" />
+                <div class="autocomplete-list" id="truckerReturnCityList" role="listbox"></div>
+              </div>
+            </div>
+
+            <div class="field-grid-2">
+              <div class="field">
+                <label for="truckerVehicleType" data-i18n="lbl_veh_type">Vehicle category</label>
+                <select id="truckerVehicleType">
+                  <option value="32 ft Container MXL">32 ft Container MXL</option>
+                  <option value="32 ft Container SXL">32 ft Container SXL</option>
+                  <option value="20–24 ft Container">20–24 ft Container</option>
+                  <option value="19 ft Open Body">19 ft Open Body</option>
+                  <option value="10 / 12-Tyre Open Lorry">10 / 12-Tyre Open Lorry</option>
+                  <option value="14 / 16-Tyre Open Lorry">14 / 16-Tyre Open Lorry</option>
+                  <option value="40 ft Flatbed / 55T Heavy Trailer">40 ft Flatbed / 55T Heavy Trailer</option>
+                  <option value="14 ft Eicher / Pickup">14 ft Eicher / Pickup</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="truckerRegNo" data-i18n="lbl_reg_no">Registration no. (optional)</label>
+                <input type="text" id="truckerRegNo" placeholder="e.g. RJ 14 GB 5532" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="truckerPhone" data-i18n="lbl_driver_phone">Driver / owner WhatsApp no.</label>
+              <input type="tel" id="truckerPhone" inputmode="tel" placeholder="+91 98XXX XXXXX" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" data-i18n="btn_attach">Prepare Truck Attachment Request</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="svc_eyebrow">What we do</span>
+            <h2 class="section-title" data-i18n="svc_title">Two ways to move your freight</h2>
+          </div>
+          <p class="section-intro" data-i18n="svc_sub">Whether you fill a whole truck or only part of one, we match the load to the right vehicle and the right corridor.</p>
+        </div>
+
+        <div class="service-grid">
+          <article class="service-card reveal">
+            <span class="service-tag">FTL</span>
+            <h3 data-i18n="svc_ftl_title">Full Load Truck</h3>
+            <p data-i18n="svc_ftl_desc">A dedicated vehicle booked only for your cargo, running point to point with no consolidation stops.</p>
+            <ul>
+              <li data-i18n="svc_ftl_1">Factory-to-warehouse and bulk dispatches</li>
+              <li data-i18n="svc_ftl_2">Vehicles from 1T pickups to 55T trailers</li>
+              <li data-i18n="svc_ftl_3">Closed container and open-body options</li>
+            </ul>
+            <button type="button" class="btn btn-outline" data-open-mode="ftl" data-i18n="svc_ftl_cta">Book a Full Load</button>
+          </article>
+
+          <article class="service-card reveal">
+            <span class="service-tag">PTL</span>
+            <h3 data-i18n="svc_ptl_title">Sharing Load</h3>
+            <p data-i18n="svc_ptl_desc">Ship a part load and use only the space you need. Your consignment travels with others on the same corridor.</p>
+            <ul>
+              <li data-i18n="svc_ptl_1">Suited to smaller, regular consignments</li>
+              <li data-i18n="svc_ptl_2">Pallets, cartons and mixed commodities</li>
+              <li data-i18n="svc_ptl_3">Lorry Receipt issued for every consignment</li>
+            </ul>
+            <button type="button" class="btn btn-outline" data-open-mode="ptl" data-i18n="svc_ptl_cta">Book a Part Load</button>
+          </article>
+
+          <article class="service-card is-owner reveal">
+            <span class="service-tag" data-i18n="svc_own_tag">FOR TRUCK OWNERS</span>
+            <h3 data-i18n="svc_own_title">Own a truck?</h3>
+            <p data-i18n="svc_own_desc">Register where your vehicle is and where you want to go next. We'll contact you when a matching load is available on that route.</p>
+            <ul>
+              <li data-i18n="svc_own_1">Open to fleet owners and single-truck drivers</li>
+              <li data-i18n="svc_own_2">Share your return corridor to reduce empty runs</li>
+            </ul>
+            <button type="button" class="btn btn-primary" id="svcAttachBtn" data-i18n="cta_attach">Attach Your Truck</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= STATS ================= -->
+    <section class="stats" aria-label="Network scope">
+      <div class="container stats-grid">
+        <div class="stat">
+          <div class="stat-value"><span class="count-num" data-target="28">28</span></div>
+          <p class="stat-caption" data-i18n="stat_states">Indian states connected</p>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><span class="count-num" data-target="8">8</span></div>
+          <p class="stat-caption" data-i18n="stat_uts">Union Territories served</p>
+        </div>
+        <div class="stat">
+          <div class="stat-value">1T–<span class="count-num" data-target="55">55</span>T</div>
+          <p class="stat-caption" data-i18n="stat_payload">Pickups to heavy trailers</p>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><span class="count-num" id="fleetCountNum" data-target="14">14</span></div>
+          <p class="stat-caption" data-i18n="stat_fleet">Vehicle configurations</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FLEET ================= -->
+    <section class="section" id="fleet">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="fleet_eyebrow">Our fleet</span>
+            <h2 class="section-title" data-i18n="fleet_title">Built for every payload class</h2>
+          </div>
+          <p class="section-intro" data-i18n="fleet_sub">From city pickups to multi-axle 55-tonne tractor-trailers. Pick a vehicle and we'll pre-fill your booking.</p>
+        </div>
+
+        <div class="filter-bar" id="fleetFilters" role="group" aria-label="Filter fleet by category">
+          <button class="filter-btn active" data-filter="all" type="button" data-i18n="flt_all">All vehicles</button>
+          <button class="filter-btn" data-filter="container" type="button" data-i18n="flt_container">Closed containers</button>
+          <button class="filter-btn" data-filter="open" type="button" data-i18n="flt_open">Open body lorries</button>
+          <button class="filter-btn" data-filter="trailer" type="button" data-i18n="flt_trailer">Heavy trailers</button>
+          <button class="filter-btn" data-filter="lcv" type="button" data-i18n="flt_lcv">Mini / LCV</button>
+        </div>
+
+        <div class="fleet-grid" id="fleetGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= NETWORK ================= -->
+    <section class="section section-alt" id="network">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="net_eyebrow">Pan-India corridors</span>
+            <h2 class="section-title" data-i18n="net_title">National freight network</h2>
+            <span class="permit-badge"><svg class="flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="6.7" fill="#FF9933"/><rect y="6.7" width="30" height="6.6" fill="#fff"/><rect y="13.3" width="30" height="6.7" fill="#138808"/><g fill="none" stroke="#000080" stroke-width=".3"><circle cx="15" cy="10" r="2.7"/><path d="M12.30 10.00L17.70 10.00M12.39 9.30L17.61 10.70M12.66 8.65L17.34 11.35M13.09 8.09L16.91 11.91M13.65 7.66L16.35 12.34M14.30 7.39L15.70 12.61M15.00 7.30L15.00 12.70M15.70 7.39L14.30 12.61M16.35 7.66L13.65 12.34M16.91 8.09L13.09 11.91M17.34 8.65L12.66 11.35M17.61 9.30L12.39 10.70"/></g></svg><b data-i18n="permit_badge">ALL INDIA PERMIT</b></span>
+          </div>
+          <p class="section-intro" data-i18n="net_sub">Choose a major corridor from the list or the map to see the approximate distance and fill in your booking.</p>
+        </div>
+
+        <div class="network-grid">
+          <div class="map-card">
+            <div class="map-bar">
+              <span data-i18n="map_title">Major freight corridors</span>
+              <b id="activeCorridorHud">JAIPUR ⇄ MUMBAI · 1,150 KM</b>
+            </div>
+            <div class="map-canvas">
+              <svg viewBox="0 0 490 540" class="india-svg" id="indiaSvgMap" role="img" aria-label="Map of India showing major freight corridors">
+                <g class="map-grid" id="mapGrid" aria-hidden="true"></g>
+                <path class="india-outline" id="indiaOutline" d="" />
+                <g class="india-islands" id="indiaIslands" aria-hidden="true"></g>
+                <g id="mapRoutes"></g>
+                <g id="mapHubs"></g>
+                <g id="mapPulseLayer"></g>
+              </svg>
+            </div>
+            <div class="map-footer">
+              <div>
+                <strong id="mapSelectedRoute">Jaipur, Rajasthan ⇄ Mumbai, Maharashtra</strong>
+                <span id="mapSelectedMeta"></span>
+              </div>
+              <button type="button" id="mapBookRouteBtn" class="btn btn-primary btn-sm" data-i18n="map_use">Use this route →</button>
+            </div>
+          </div>
+
+          <div class="corridor-list" id="corridorsGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PROCESS ================= -->
+    <section class="section" id="process">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="proc_eyebrow">How it works</span>
+            <h2 class="section-title" data-i18n="proc_title">From truck placement to proof of delivery</h2>
+          </div>
+          <p class="section-intro" data-i18n="proc_sub">Six clear stages keep every consignment documented from the first gate entry to final signed delivery.</p>
+        </div>
+        <div class="process-grid" id="processGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= TRACKING DEMO ================= -->
+    <section class="section section-alt" id="tracking">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="trk_eyebrow">Lorry receipt visibility</span>
+            <h2 class="section-title" data-i18n="trk_title">Shipment tracking preview</h2>
+          </div>
+          <div class="demo-note">
+            <strong data-i18n="trk_tag">Demonstration data only</strong>
+            <p data-i18n="trk_disclaimer">These are sample shipments that preview how LR tracking will look. They are not live GPS data.</p>
+          </div>
+        </div>
+
+        <div class="tracker reveal">
+          <div class="tracker-controls">
+            <form id="trackForm" autocomplete="off">
+              <label for="lrInput" data-i18n="lbl_lr">Enter a sample LR number</label>
+              <div class="tracking-bar">
+                <input type="text" id="lrInput" placeholder="e.g. STL-8841" />
+                <button type="submit" id="trackBtn" class="btn btn-primary" data-i18n="btn_track">Preview LR</button>
+              </div>
+            </form>
+            <div>
+              <span class="lbl" data-i18n="trk_samples">Sample shipments</span>
+              <div class="pill-row" id="sampleButtons"></div>
+            </div>
+          </div>
+
+          <div class="tracker-readout">
+            <div class="telemetry-grid">
+              <div class="telemetry-cell"><span data-i18n="trk_l_id">LR ID</span><strong id="trkId"></strong></div>
+              <div class="telemetry-cell"><span data-i18n="trk_l_route">Route</span><strong id="trkRoute"></strong></div>
+              <div class="telemetry-cell"><span data-i18n="trk_l_vehicle">Vehicle</span><strong id="trkType"></strong></div>
+              <div class="telemetry-cell"><span data-i18n="trk_l_status">Status</span><strong id="trkStatus" class="status"></strong></div>
+            </div>
+
+            <div class="highway" aria-hidden="true">
+              <div class="highway-track"><div class="highway-fill" id="trkProgressFill" style="width:0%"></div></div>
+              <div class="highway-marker" id="trkTruckIcon" style="left:0%"><svg><use href="#i-truck" /></svg></div>
+            </div>
+
+            <div class="milestone-grid" id="trkMilestones"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LEADERSHIP ================= -->
+    <section class="section" id="leadership">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="lead_eyebrow">Our team</span>
+            <h2 class="section-title" data-i18n="lead_title">Leadership</h2>
+          </div>
+          <p class="section-intro" data-i18n="lead_sub">The team behind fleet technology, dispatch operations and financial management at Sanwaliya Translinks.</p>
+        </div>
+        <div class="leadership-grid" id="leadershipGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= CONNECT ================= -->
+    <section class="section section-alt" id="connect">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow" data-i18n="social_eyebrow">Stay in touch</span>
+            <h2 class="section-title" data-i18n="social_title">Connect with Sanwaliya</h2>
+          </div>
+          <p class="section-intro" data-i18n="social_sub">Follow our journey across India's transportation and logistics network.</p>
+        </div>
+
+        <div class="social-grid">
+          <article class="social-panel linkedin-panel reveal">
+            <div>
+              <div class="social-top">
+                <div class="social-brand">
+                  <svg class="icon" aria-hidden="true"><use href="#i-linkedin" /></svg>
+                  <div><h3>LinkedIn</h3><span>Sanwaliya Translinks</span></div>
+                </div>
+                <span class="channel-tag">CORPORATE</span>
+              </div>
+              <div class="social-body" style="margin-top:22px">
+                <h4>Freight &amp; network updates</h4>
+                <p>Follow our company page for corridor announcements, fleet milestones and enterprise logistics partnerships.</p>
+                <div class="pillars"><span>Full Load (FTL)</span><span>Sharing Load (PTL)</span><span>Industrial corridors</span></div>
+              </div>
+            </div>
+            <a id="linkedinFollowBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-block">Follow our company →</a>
+          </article>
+
+          <article class="social-panel instagram-panel reveal">
+            <div>
+              <div class="social-top">
+                <div class="social-brand">
+                  <svg class="icon" aria-hidden="true"><use href="#i-instagram" /></svg>
+                  <div><h3>Instagram</h3><span>Sanwaliya Translinks</span></div>
+                </div>
+                <span class="channel-tag">HIGHWAY JOURNAL</span>
+              </div>
+              <div class="ig-grid" style="margin-top:22px">
+                <div class="ph"><span class="ph-label">Highway</span><img src="images/social/highway-01.jpg" alt="Sanwaliya Translinks truck on the highway" loading="lazy" onerror="this.classList.add('is-broken')" /></div>
+                <div class="ph"><span class="ph-label">Fleet</span><img src="images/social/fleet-02.jpg" alt="Sanwaliya Translinks fleet ready for dispatch" loading="lazy" onerror="this.classList.add('is-broken')" /></div>
+                <div class="ph"><span class="ph-label">Cargo</span><img src="images/social/cargo-03.jpg" alt="Cargo being loaded at a warehouse" loading="lazy" onerror="this.classList.add('is-broken')" /></div>
+              </div>
+            </div>
+            <a id="instagramFollowBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-block">Follow on Instagram →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CLOSING CTA ================= -->
+    <section class="closing">
+      <div class="road" aria-hidden="true"><div class="road-truck"><svg><use href="#i-truck" /></svg></div><div class="road-truck t2"><svg><use href="#i-truck" /></svg></div></div>
+      <div class="container closing-inner">
+        <h2 data-i18n="cta_title">Move your next load across India with confidence.</h2>
+        <div class="closing-actions">
+          <button type="button" id="closingBookBtn" class="btn btn-primary" data-i18n="cta_book">Book a Truck</button>
+          <a id="closingWhatsAppBtn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-light">
+            <svg class="icon" aria-hidden="true"><use href="#i-whatsapp" /></svg>
+            <span data-i18n="cta_wa">WhatsApp dispatch desk</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand">
+          <span class="brand-mark">
+            <span class="brand-monogram" aria-hidden="true">ST</span>
+            <img src="images/logo.png" alt="" onerror="this.classList.add('is-broken')" />
+          </span>
+          <span class="brand-copy">
+            <span class="brand-name">SANWALIYA</span>
+            <span class="brand-tag">TRANSLINKS</span>
+          </span>
+        </div>
+        <p class="footer-about">Commercial Full Load (FTL) and Sharing Load (PTL) freight transportation across India's major industrial corridors, ports and state highways.</p>
+        <div class="footer-socials">
+          <a id="footerLinkedinLink" href="#" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="Sanwaliya Translinks on LinkedIn">
+            <svg class="icon" aria-hidden="true"><use href="#i-linkedin" /></svg> LinkedIn
+          </a>
+          <a id="footerInstagramLink" href="#" target="_blank" rel="noopener noreferrer" class="footer-social" aria-label="Sanwaliya Translinks on Instagram">
+            <svg class="icon" aria-hidden="true"><use href="#i-instagram" /></svg> Instagram
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#booking-desk">Book a Truck</a></li>
+          <li><a href="#fleet">Fleet</a></li>
+          <li><a href="#network">India network</a></li>
+          <li><a href="#process">How it works</a></li>
+          <li><a href="#tracking">Tracking preview</a></li>
+          <li><a href="#leadership">Leadership</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#booking-desk" data-open-mode="ftl">Full Load Truck (FTL)</a></li>
+          <li><a href="#booking-desk" data-open-mode="ptl">Sharing Load (PTL)</a></li>
+          <li><a href="#fleet">Closed container transport</a></li>
+          <li><a href="#fleet">Open body &amp; multi-axle lorries</a></li>
+          <li><a href="#fleet">40 ft &amp; 55T heavy haulage</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Major hubs</h4>
+        <p class="footer-hubs">Jaipur · Delhi NCR · Mumbai · Bhiwandi · Ahmedabad · Surat · Pune · Bengaluru · Chennai · Hyderabad · Kolkata · Indore · Ludhiana · Nagpur · Kochi · Guwahati</p>
+        <a id="footerWhatsAppLink" href="#" target="_blank" rel="noopener noreferrer" class="footer-wa">WhatsApp dispatch desk →</a>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© <span id="yearNow">2026</span> Sanwaliya Translinks. All rights reserved.</p>
+      <p class="visitor-stats"><span class="live-dot" aria-hidden="true"></span><b id="liveCount">–</b> online now · <b id="totalCount">–</b> total visitors</p>
+      <p>Pan-India commercial freight &amp; logistics</p>
+    </div>
+  </footer>
+
+  <a id="floatingWhatsApp" href="#" target="_blank" rel="noopener noreferrer" class="wa-fab" aria-label="Message Sanwaliya Translinks on WhatsApp">
+    <svg class="icon" aria-hidden="true"><use href="#i-whatsapp" /></svg>
+    <span>WhatsApp</span>
+  </a>
+
+  <!-- Booking hand-off modal -->
+  <div id="bookingModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <span class="eyebrow" id="modalEyebrow">Request ready</span>
+          <h3 id="modalTitle">Review &amp; send your request</h3>
+        </div>
+        <button type="button" id="closeModalBtn" class="modal-close" aria-label="Close">✕</button>
+      </div>
+
+      <div id="modalDetails" class="modal-details"></div>
+
+      <p class="modal-note">This website doesn't store your details on a server. To complete your request, send this summary to us on WhatsApp or email, or copy it.</p>
+
+      <div class="modal-actions">
+        <a id="whatsappConfirmLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-wa btn-block">
+          <svg class="icon" aria-hidden="true"><use href="#i-whatsapp" /></svg> Send via WhatsApp
+        </a>
+        <div class="modal-secondary">
+          <a id="emailConfirmLink" href="#" class="btn btn-outline btn-block">Send via email</a>
+          <button type="button" id="copySummaryBtn" class="btn btn-outline btn-block">Copy summary</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+</body>
+</html>
