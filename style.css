@@ -1075,3 +1075,23 @@ html { scroll-padding-top: calc(var(--hdr) + 16px); }
   .footer-grid > :first-child, .footer-grid > :last-child { grid-column: 1 / -1; }
 }
 @media (max-width: 380px) { :root { --gutter: 12px; } }
+
+/* ==========================================================================
+   REVERSE (swap) BUTTON, phone layout
+   Sits in its own column to the right of the two city fields, vertically
+   centred between them, never overlapping an input. Arrow icon is drawn as an
+   image so it looks the same on every phone; it flips when pressed.
+   ========================================================================== */
+@media (max-width: 680px) {
+  .route-row { position: static; display: grid; grid-template-columns: minmax(0, 1fr) 46px; grid-template-areas: "from swap" "upto swap"; column-gap: 10px; row-gap: 14px; align-items: end; }
+  .route-row > .field:first-child { grid-area: from; }
+  .route-row > .field:last-child { grid-area: upto; }
+  .route-row .swap-btn {
+    grid-area: swap; align-self: center; position: static; width: 46px; height: 46px; padding: 0; margin: 0; z-index: auto;
+    border-radius: 50%; border: 1.5px solid var(--line-strong); box-shadow: none; font-size: 0; line-height: 0; color: transparent;
+    transform: none; transition: transform .3s cubic-bezier(.3, 1.4, .5, 1), border-color .15s, background-color .15s; -webkit-tap-highlight-color: transparent;
+    background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23444F63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 20V5M8 5 4.5 8.5M8 5l3.5 3.5M16 4v15M16 19l-3.5-3.5M16 19l3.5-3.5'/%3E%3C/svg%3E") center / 22px no-repeat;
+  }
+  .route-row .swap-btn:active { transform: rotate(180deg) scale(.94); border-color: var(--accent); background-color: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+  [data-theme="dark"] .route-row .swap-btn { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C6CFDD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 20V5M8 5 4.5 8.5M8 5l3.5 3.5M16 4v15M16 19l-3.5-3.5M16 19l3.5-3.5'/%3E%3C/svg%3E"); }
+}
