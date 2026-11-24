@@ -1018,3 +1018,60 @@ html { scroll-padding-top: calc(var(--hdr) + 16px); }
 .visitor-stats { display: inline-flex; align-items: center; gap: 6px; }
 .visitor-stats b { color: var(--on-dark); font-family: var(--font-data); font-weight: 600; }
 .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #25D366; animation: waPulse 2s ease-out infinite; }
+/* ==========================================================================
+   MOBILE POLISH (phones and small tablets)
+   - fleet, process and team become swipe rows instead of endless stacks
+   - swap button fixed, tighter spacing, compact corridor list
+   ========================================================================== */
+@media (max-width: 900px) {
+  .fleet-grid, .process-grid, .leadership-grid {
+    display: flex; gap: 14px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter)); padding: 4px var(--gutter) 22px; scroll-padding-inline: var(--gutter);
+  }
+  .fleet-grid::-webkit-scrollbar, .process-grid::-webkit-scrollbar, .leadership-grid::-webkit-scrollbar { display: none; }
+  .fleet-grid > *, .process-grid > *, .leadership-grid > * { flex: 0 0 min(80%, 340px); scroll-snap-align: start; }
+  .fleet-card.is-featured { flex-basis: min(86%, 380px); }
+  .fleet-photo { aspect-ratio: 16 / 10; }
+  .leader-portrait { aspect-ratio: 4 / 3.6; }
+}
+
+@media (max-width: 680px) {
+  .section { padding: 60px 0; }
+  #services, #network, #network.section-alt { padding: 64px 0; }
+  #connect { padding-bottom: 64px; }
+  #fleet { padding-bottom: calc(36px + var(--fade)); }
+  .hero { padding-bottom: calc(96px + var(--arc)); }
+  .section-title { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .section-head { margin-bottom: 26px; }
+
+  /* booking form: swap button was a tall bar; now a small round button between the two cities */
+  .route-row { position: relative; grid-template-columns: 1fr; gap: 22px; }
+  .swap-btn { position: absolute; right: 12px; top: calc(50% - 18px); z-index: 3; width: 36px; height: 36px; padding: 0; border-radius: 50%; transform: rotate(90deg); box-shadow: 0 6px 14px -6px rgba(14, 23, 38, .4); }
+  .mode-option { padding: 12px 14px; }
+
+  /* compact corridor list, no scroll trap */
+  .corridor-list { max-height: none; overflow: visible; padding-right: 0; gap: 10px; }
+  .corridor-row { flex-direction: row; align-items: center; gap: 10px; padding: 12px 14px; }
+  .corridor-row .btn { width: auto; padding: 8px 14px; font-size: .85rem; flex: none; }
+  .corridor-cities { font-size: 1.1rem; }
+
+  .permit-badge { max-width: 100%; padding: 8px 14px 10px 9px; gap: 10px; }
+  .permit-badge b { font-size: 1rem; letter-spacing: .12em; }
+  .flag { width: 30px; height: 20px; }
+
+  .tracker-controls { padding: 18px; gap: 14px; }
+  .tracker-readout { padding: 18px; }
+  .footer-grid { gap: 28px; }
+  .visitor-badge { font-size: .78rem; padding: 6px 12px; }
+}
+
+/* gutter = the page's side margin, so swipe rows line up with the text and still bleed to the screen edge */
+@media (max-width: 900px) { :root { --gutter: 24px; } }
+@media (max-width: 680px) {
+  :root { --gutter: 16px; }
+  .net-nodes { display: none; }          /* glowing dots were scaled up behind the hero text */
+  .hero-net { opacity: .28; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 26px 20px; }
+  .footer-grid > :first-child, .footer-grid > :last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 380px) { :root { --gutter: 12px; } }
